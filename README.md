@@ -4,7 +4,7 @@ Este repositorio contiene material y trabajos realizados para la materia Anális
 
 ## 1. Interpolación
 
-En esta ocasión se analizaron dos métodos de interpolación distintos: Interpolación por método de Newton; Interpolación con Splines. Los datos utilizados pertenecen a una serie financiera del Merval, donde se buscó interpolar los valores de los cierres diarios a partir de los cierres semanales (viernes). Por otro lado se corroboró la influencia del *fenomeno de Runge*.
+En esta ocasión se analizaron dos métodos de **interpolación** distintos: Interpolación por método de Newton; Interpolación con Splines. Los datos utilizados pertenecen a una serie financiera del Merval, donde se buscó interpolar los valores de los cierres diarios a partir de los cierres semanales (viernes). Por otro lado se corroboró la influencia del *fenomeno de Runge*.
 
 ## 2. Integración y sumación
 
