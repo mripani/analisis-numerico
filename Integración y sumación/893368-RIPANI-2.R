@@ -1,5 +1,5 @@
 '
-Trabajo práctico #2 (Ejercicio 1 - Integración)
+Trabajo práctico #2
 Análisis Numérico
 Máximo Ripani
 Facultad de Ciencias Económicas de Buenos Aires
@@ -13,14 +13,8 @@ options(digits=20)
 setwd("/Users/mac/Facultad/Analisis Numerico/TP3")
 source('utils/Euler-Mac Laurin.R')
 
-'
-li=Limite superior de la integral (ACEPTA NO ENTEROS)
-ls=limite inferior de la integral (ACEPTA NO ENTEROS)
-ti=Limite superior de la transformaci?n en caso de l?mites no enteros en caso que no se quiera redondear
-ts=limite inferior de la transformaci?n en caso de l?mites no enteros en caso que no se quiera redondear
-u=Cant n?meros de bernoulli con un m?ximo de u=11,Por defecto u=3
-'
-# Definimos la función 
+
+# Función 
 func = expression(exp(0.7*X)*(cos(5*X)+sin(5*X)))
 f = function(X){exp(0.7*X)*(cos(5*X)+sin(5*X))}
 
@@ -30,335 +24,176 @@ ls = 3
 
 # Valor real
 integral = integrate(f, li,ls)[1]
-# La aproximación deberia dar 2.762193762069276
+
+# Aproximaciones
+# u3 1.3341547906356678865
 em_u3 = eulermaclaurint(li,ls,u=3)
+# u4 2.4690703323751064246
 em_u4 = eulermaclaurint(li,ls,u=4)
+# u5 2.9871984191830671662
 em_u5 = eulermaclaurint(li,ls,u=5)
+# u6 3.163047797359653579
 em_u6 = eulermaclaurint(li,ls,u=6)
+# u7 3.1660575547591909285
 em_u7 = eulermaclaurint(li,ls,u=7)
 
-# Error relativo
-calcular_e_relativo = function(r,a){
-  error_relativo = abs((r - a))/(r)
-  return(error_relativo)
+# Error real
+calcular_e = function(r,a){
+  error = r-a
+  return(error)
 }
 
-# Guardamos resultados en una tabla 
-resultados = c(em_u3,em_u4,em_u5,em_u6, em_u7)
-mus = c('u=3','u=4', 'u=5', 'u=6','u=7')
-err = c(calcular_e_relativo(as.numeric(integral), em_u3),calcular_e_relativo(as.numeric(integral), em_u4),calcular_e_relativo(as.numeric(integral), em_u5),calcular_e_relativo(as.numeric(integral), em_u6),calcular_e_relativo(as.numeric(integral), em_u7))
-tabla_resultados = data.frame(mus, resultados, err)
-names(tabla_resultados) = c('u','aproximación', 'error_relativo')
-tabla_resultados
 
-#for(i in 1:11){
-#  print(i)
-#  print(eulermaclaurint(li,ls,u=i))}
+# Errores
+err1 = calcular_e(as.numeric(integral[1]), em_u3) # 1.4280389714336103602
+err2 = calcular_e(as.numeric(integral[1]), em_u4) # 0.29312342969417182204
+err3 = calcular_e(as.numeric(integral[1]), em_u5) # -0.22500465711378891953
+err4 = calcular_e(as.numeric(integral[1]), em_u6) # -0.40085403529037533232
+err5 = calcular_e(as.numeric(integral[1]), em_u7) # -0.40386379268991268177
+
+# Cuadratura
 '
-Cambiamos de variables (cuadratura)
 Trasnformación
 t = a + b*x
 dt = b*dx
 '
-lista = c(1,12,48,120)
-# Resulevo el sistema de ecuaciones
-coeficientes = c()
-for(i in lista){
-  linf = 0
-  lsup = i
-  data = c(1,linf,1,lsup)
-  A = matrix(ncol=2, byrow=TRUE,data=data)
-  b = matrix(c(1,3))
-  coeficientes = c(coeficientes, solve(A,b))
-}
-# Tabla con coeficientes de la transformacion
-tabla_coeficientes = matrix(data=coeficientes, ncol=2, byrow=TRUE)
-
-# Limites superiores
+#Cuadratura limites [0;1]  57.102970185848939
+func=expression(((exp(1.4*X+0.7))*(cos(10*X+5)+sin(10*X+5)))*2) 
+calcular_e(as.numeric(integral), 57.102970185848939)
 
 
-# Aproximo luego de aplicar transformacion
-limites = c('(0;1)', '(0;12)', '(0;48)','(0;120)')
-aproximaciones = c()
-valores_reales = c()
-errores = c()
-for(i in 1:4){
-  # Calcula para cada transformacion la aproximacion y sus errores
-  a = tabla_coeficientes[i,1]
-  b = tabla_coeficientes[i,2]
-  func = expression(exp(0.7*(a+b*X))*(cos(5*(a+b*X))+sin(5*(a+b*X))))
-  f = function(x){exp(0.7*(a+b*x))*(cos(5*(a+b*x))+sin(5*(a+b*x)))}
-  lsup = lista[i]
-  linf = 0
-  em = eulermaclaurint(linf, lsup,u=3)
-  aproximaciones = c(aproximaciones, em)
-  val = integrate(f, linf, lsup)
-  valores_reales = c(valores_reales, as.numeric(val[1]))
-  error = calcular_e_relativo(as.numeric(val[1]),em)
-  errores = c(errores, error)
-}
+#Cuadratura limites [0;12] 2.7621691255017065
+func=expression(((exp((7/60)*X+0.7))*(cos((5/6)*X+5)+sin((5/6)*X+5)))*1/6) 
+calcular_e(as.numeric(integral), 2.7621691255017065)
 
-# Creo tabla con resultados
-tabla_resultados2 = data.frame(limites, valores_reales, aproximaciones, errores)
-names(tabla_resultados2) = c('Cuadratura', 'Valor real', 'Aproximación', 'Error Relativo')
+#Cuadratura limites [0;48] 2.7621937561258014
+func=expression(((exp((7/240)*X+0.7))*(cos((5/24)*X+5)+sin((5/24)*X+5)))*1/24) 
+calcular_e(as.numeric(integral), 2.7621937561258014)
 
-tabla_resultados2
-
-
+#Cuadratura limites [0;120] 2.7621937620449484
+func=expression(((exp((7/600)*X+0.7))*(cos((5/60)*X+5)+sin((5/60)*X+5)))*1/60) 
+calcular_e(as.numeric(integral), 2.7621937620449484)
 
 
 # 2. Trapecio, Simpson, Simpson 3/8
-
 source('utils/Trapecio.R')
-
-'
-Trapecio
-Se crea la funcion "trapecio" con argumentos:
-a: Limite Inferior de la integral
-b: Limite Superior de la integral
-n: Tamaño de cada intervalo
-'
-
 
 ## Aproximamos con la formula del trapecio con n=6
 func = function(X){exp(0.7*X)*(cos(5*X)+sin(5*X))}
 funci = expression(exp(0.7*X)*(cos(5*X)+sin(5*X)))
 n = 6
-trapecio_n6 = trapecio(1,3,n)
+
 valor_real_integral = as.numeric(integrate(func, 1,3)[1])
 
-# Calcular cota
+# n6 2.0868141398644048934
+trapecio_n6 = trapecio(1,3,n)
+# n12 2.5989573431540122783
+trapecio_n12 = trapecio(1,3,12)
+# n48 2.7520950399613579584
+trapecio_n48 = trapecio(1,3,48)
+# n120 2.7605788815599177077
+trapecio_n120 = trapecio(1,3,120)
 
 
-# Derivada 2
-calculate_fii = function(expr,var){
-  'Recibe expresion y devuelve la 2da derivada'
-  fii = D(D(expr,var),var)
-  return(fii)
-}
+# Errores
+err1 = calcular_e(valor_real_integral, trapecio_n6) #0.6753796222048733533
+err2 = calcular_e(valor_real_integral, trapecio_n12) #0.16323641891526686 
+err3 = calcular_e(valor_real_integral, trapecio_n48) #0.010098722107920732 
+err4 = calcular_e(valor_real_integral, trapecio_n120)#0.001614880509360539 
 
-# Derivada 3 
-calculate_fiii = function(expr,var){
-  'Recibe expresion y devuelve la 2da derivada'
-  fiii = D(D(D(expr,var),var), var)
-  return(fiii)
-}
-
-# Derivada 4
-calculate_fiv = function(expr,var){
-  'Recibe una expresion y devuelve la derivada 4ta'
-  fiv = D(D(D(D(expr,var),var),var),var)
-  return(fiv)}
-
-# Derivada 5
-calculate_fv = function(expr,var){
-  'Recibe una expresion y devuelve la derivada 4ta'
-  fv = D(D(D(D(D(expr,var),var),var),var), var)
-  return(fv)}
-
-# Calculamos la cota de la formula de Trapecio
-"
-Cota de Trapecio
-((h^3)/12)*n*fii(∂)
-"
-n = 6
-h = 1/3
-
-# Chequeo que valor mayora 
-mayorandos = c()
-for(phi in seq(1,3,1/3)){
-  fii = calculate_fii(funci, 'X')
-  X = phi
-  mayorandos = c(mayorandos,phi, eval(fii))
-}
-
-matrix(data=mayorandos, ncol=2, byrow=TRUE)
-
-# Phi que mayora entre 1 y 3 con h=1/3
-phi = 2.6666666666666665186 # Chequear si este es el valor que mayora 
-
-# Calculo la cota del trapecio
-calculate_cota_trapecio = function(expr,h,n,phi){
-  "Recibe la función, el 'h', el 'n', y el 'phi' que mayora"
-  fii = calculate_fii(expr, 'X')
-  X = phi
-  eval_fii = eval(fii)
-  cota_trapecio = expression(((h^3)/12)*n*abs(eval_fii))
-  return(eval(cota_trapecio))}
-
-cota_trapecio = calculate_cota_trapecio(funci, h,n, phi)
-
-
-# Verifico que el resultado real este dentro de la aproximación
-cota_trapecio
+# Cotas de Trapecio
+c1 = 4.5441399947688597
+c2 = 1.1360349986922149
+c3 = 0.071002187418263432 
+c4 = 0.011360349986922149 
 
 
 ## Aproximamos con la formula de Simpson
 source('utils/Simpson.R')
 
-"
-Se crea la funcion 'simpson' con argumentos:
-a: Limite Inferior de la integral
-b: Limite Superior de la integral
-n: Tamaño de cada intervalo
-"
-
 func = function(X){exp(0.7*X)*(cos(5*X)+sin(5*X))}
+
+# n6 2.9122663212646391351
 simpson_n6 = simpson(1,3,6)
+# n12 2.7696717442505480733
+simpson_n12 = simpson(1,3,12)
+# n48 2.7622210866361736059
+simpson_n48 = simpson(1,3,48)
+# n120 2.7621944590141578324
+simpson_n120 = simpson(1,3,120)
 
 
-"
-Cota de Simpson
-((h^5)/90)*((n/2) * fiv(∂))
-"
+err1 = calcular_e(valor_real_integral, simpson_n6) #-0.15007255919536089 
+err2 = calcular_e(valor_real_integral, simpson_n12) #-0.0074779821812693825 
+err3 = calcular_e(valor_real_integral, simpson_n48) #-0.000027324566894915137
+err4 = calcular_e(valor_real_integral, simpson_n120) #-0.000000696944879585714 
 
-fiv_prueba = calculate_fiv(funci, 'X')
+# Cotas simpson
+c1 = -0.89207666143414766 
+c2 = -0.055754791339634228 
+c3 = -0.0002177921536704462 
+c4 = -0.000005575479133951826 
 
-mayorandos = c()
-for(i in seq(1,3,1/3)){
-  X = i
-  mayorandos = c(mayorandos, i, eval(fiv_prueba))
-}
-
-matrix(data=mayorandos, byrow = TRUE, ncol = 2)
-
-
-
-# Calculamos la cota de simpson
-phi = 2.6666666666666665186
-
-calculate_cota_simpson = function(expr, h, n, phi){
-  "Recibe una funcion, el 'h', el 'n', y el 'phi' que mayora"
-  fiv = calculate_fiv(funci, 'X')
-  X = phi
-  eval_fiv = eval(fiv)
-  cota_simpson = expression(((h^5)/90)*((n/2) * eval_fiv))
-  return(eval(cota_simpson))
-}
-
-cota_simpson = calculate_cota_simpson(funci, h, n, phi)
-
-# Verifico que el valor real se encuentre dentro de la aproximacion 
-#(DA MAL VERIFICAR)
-as.numeric(integral[1]) - simpson_n6 < cota_simpson
 
 
 ## Calculo con simpson 3/8
-source('utils/Simpson3-8.R')
-"
-Se crea la funci?n 'simpson3_8' con argumentos:
-a: Limite Inferior de la integral
-b: Limite Superior de la integral
-n: Tamaño de cada intervalo
-"
+source('/Users/mac/Facultad/Analisis Numerico/TP3/utils/Simpson3-8.R')
+
+SIMPSON3_8<-function(a,b,n){
+  
+  if ((n/3)!=round((n/3))) return("n debe ser m?ltiplo de 3")
+  else {
+    h = (b-a)/n
+    
+    #Armo dos secuencias que combinadas sean todos lo no multiplos de 3    
+    
+    if(n>3) m1=seq(1,n-1,3) else m1=1 
+    if (n>3) m2=seq(2,n-1,3) else m2=2
+    
+    # todos los numeros multiplos de 3 ,desde 1 hasta n-3  
+    
+    if (n>3) m3= seq(3, n-3, by = 3) else m3=0 
+    
+    #Sumatoria de todos los valores que toma la funcion en a+ih siendo i no m?ltiplo de 3    
+    
+    M1=sum(func(a+(h*m1)))      
+    M2=sum(func(a+(h*m2)))   
+    
+    #Sumatoria de todos los valores que toma la funcion en a+ih siendo i  multiplo de 3
+    
+    if (n>3)M3=sum(func(a+(h*m3))) else M3=0 
+    
+    #Reemplazo en la funcion de Simpson.        
+    
+    integral= ((3/8)*h)*(func(a)+func(b)+(3*M1)+(2*M3)+(3*M2))
+    
+    return(integral)
+  }
+}
+
 # Aproximo con simpson38
 func = function(X){exp(0.7*X)*(cos(5*X)+sin(5*X))}
+
+# n6 3.1895799634707606707
 simpson38_n6 = SIMPSON3_8(1,3,6)
+# n12 2.7803267912696059128
+simpson38_n12 = SIMPSON3_8(1,3,12)
+# n48 2.7622555125729713055
+simpson38_n48 = SIMPSON3_8(1,3,48)
+# n120 2.7621953312918381407
+simpson38_n120= SIMPSON3_8(1,3,120)
 
-# Calculo la cota de simpson38
-"
-Cota Simpson38
-((3*(h^5))/80)((n/3)fiv(∂))
-"
-# Vemos que valor mayora
-fiv_prueba = calculate_fiv(funci, 'X')
-mayorandos = c()
-for(i in seq(1,3,1/3)){
-  X = i
-  mayorandos = c(mayorandos, i, eval(fiv_prueba))
-}
-matrix(data=mayorandos, byrow = TRUE, ncol = 2)
+# Errores
+err1 = calcular_e(as.numeric(integral[1]), simpson38_n6) # -0.42738620140148242399
+err2 = calcular_e(as.numeric(integral[1]), simpson38_n12) # -0.018133029200327666075
+err3 = calcular_e(as.numeric(integral[1]), simpson38_n48) # -0.000061750503693058789
+err4 = calcular_e(as.numeric(integral[1]), simpson38_n120) # -0.000001569222559894001
 
-# Calculamos la cota (chequear valor que mayora)
-phi = 2.6666666666666665186
-
-calculate_cota_simpson38 = function(expr, h, n, phi){
-  "Recibe una funcion, el 'h', el 'n', y el 'phi' que mayora"
-  fiv = calculate_fiv(funci, 'X')
-  X = phi
-  eval_fiv = eval(fiv)
-  cota_simpson38 = expression(((3*(h^5))/80)*((n/3)*eval_fiv))
-  return(eval(cota_simpson38))
-}
-
-cota_simpson38 = calculate_cota_simpson38(funci, h, n, phi)
-
-# Verifico que el valor real se encuentre dentro de la aproximación y la cota 
-#(CHEQUEAR)
-as.numeric(integral[1]) - simpson38_n6  < cota_simpson38
-
-
-
-# Repetimos los anteriores pasos pero utilzando n=12;n=48;n=120
-# Si cambio el n cambia el h, si cambia el h cambia el phi?
-
-resultados_trapecio = c()
-resultados_simpson = c()
-resultados_simpson38 = c()
-
-enes = c(6,12,48,120)
-
-
-
-for(n in enes){
-  # Determiinamos el h
-  h = (3-1)/n
-  
-  # Primero Trapecios
-  # Mayoramos la derivada2
-  mayorandos = c()
-  for(phi in seq(1,3,h)){
-    "Hace una tabla con la derivada2 evaluada para luego encontrar cual es el que mayora"
-    fiii = calculate_fiii(funci, 'X')
-    X = phi
-    mayorandos = c(mayorandos,phi, abs(eval(fii)))
-  }
-  df_mayorandos = data.frame(matrix(data=mayorandos, byrow = TRUE, ncol=2))
-  # Phi que mayora derivada2
-  phi = df_mayorandos[1][df_mayorandos[,2] == max(df_mayorandos),]
-  # Aproximación con trapecio
-  aprox_trapecio = trapecio(1,3,n)
-  cota_trap = calculate_cota_trapecio(funci, h, n, phi)
-  error_trap = calcular_e_relativo(as.numeric(integral[1]), aprox_trapecio)
-  resultados_trapecio = c(resultados_trapecio,n, aprox_trapecio, cota_trap, error_trap)
-  
-  # Segundo Simpson
-  # Mayoramos la derivada4
-  mayorandos = c()
-  for(phi in seq(1,3,h)){
-    "Datos para la tabla con la derivada4 evaluada y luego ver cual mayora"
-    fiv = calculate_fiv(funci,'X')
-    X = phi
-    mayorandos = c(mayorandos,phi, abs(eval(fiv)))
-  }
-  df_mayorandos = data.frame(matrix(data=mayorandos, byrow = TRUE, ncol=2))
-  # Phi que mayora derivada 4ta
-  phi = df_mayorandos[1][df_mayorandos[,2] == max(df_mayorandos),]
-  
-  # Aproximación con Simpson
-  aprox_simpson = simpson(1,3,n)
-  cota_simp = calculate_cota_simpson(funci, h, n, phi)
-  error_simp = calcular_e_relativo(as.numeric(integral[1]), aprox_simpson)
-  resultados_simpson = c(resultados_simpson, n, aprox_simpson, cota_simp, error_simp)
-  
-  # Tercero Simpson 3/8
-  aprox_simpson38 = SIMPSON3_8(1,3,n)
-  cota_simp38 = calculate_cota_simpson38(funci, h, n, phi)
-  error_simp38 = calcular_e_relativo(as.numeric(integral[1]), aprox_simpson38)
-  resultados_simpson38 = c(resultados_simpson38, n , aprox_simpson38, cota_simp38, error_simp38)
-}
-
-tabla_trapecio = data.frame(matrix(data=resultados_trapecio, ncol = 4, byrow = TRUE))
-names(tabla_trapecio) = c('n', 'aproximación', 'cota', 'error')
-tabla_simpson = data.frame(matrix(data=resultados_simpson, ncol = 4, byrow = TRUE))
-names(tabla_simpson) = c('n', 'aproximación', 'cota', 'error')
-tabla_simpson38 = data.frame(matrix(data=resultados_simpson38, ncol = 4, byrow = TRUE))
-names(tabla_simpson38) = c('n', 'aproximación', 'cota', 'error')
-
-
-
-
-
+# Cotas
+c1 = -0.42738620140148198 
+c2 = -0.018133029200327666 
+c3 = -0.000061750503693058789 
+c4 = -0.000001569222559894001
 
 "
 Trabajo Practico #3 (Ejercicio 2 - Sumación)
@@ -384,13 +219,6 @@ iv_trimestres
 
 # Sumación numérica Lubbock
 source("utils/Lubbock.R")
-
-"Argumentos:
-a=indice del primer punto. 
-n=intervalos incluidos en la sumatoria.
-m=subperiodos.
-o=opcion, para f?rmula ?nicamente con diferencias o=1 y o=2 para f?rmula con diferencias y nablas.
-"
 
 lista_sumar = c('Consumo_Público_D', 'Consumo_Privado_D', 'Exportaciones_D')
 handy = c('Consumo Publico', 'Consumo Privado', 'Exportaciones')
