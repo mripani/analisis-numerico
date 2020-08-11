@@ -13,6 +13,8 @@ En este estudio, se trabajo con distintos métodos de *integración* y *sumació
 ## 3. Ajustamiento
 En el siguiente informe se analizó  la técnica de *ajustamiento* **Whittaker**. En la misma se utilizan dos medidas de bondad del ajuste: regularidad y fidelidad. Se realizo un primer acercamiento naive seguido de la segunda etapa en donde se tuvo en cuenta el *Coeficiente de Validación Cruzada* para optimizar cierto parámetro de la formula.
 
+## Referencias
 
+La carpeta *utils* contiene los scripts de los distintos métodos utilizados en los estudios. Los mismos fueron facilitados por la cátedra de Julio Eduardo Fabris de Análisis Numérico de la Facultad de Ciencias Económicas de Buenos Aires.
 
 
